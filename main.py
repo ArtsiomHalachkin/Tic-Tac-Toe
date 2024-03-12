@@ -7,28 +7,24 @@ board = [
     ["|", "|", "|"]
 ]
 state = False
-winPlr1 = False
-winPlr2 = False
-Player1Char = ""
-Player2Char = ""
-invalid_choices = [9]
+Player1Char = " "
+Player2Char = " "
+invalid_choices = []
 
-def set_default():
-    state = False
-    winPlr1 = False
-    winPlr2 = False
-    Player2Char = ""
-    Player1Char = ""
-    invalid_choices = []
 def step_machine_choice():
-    print("Player2 move..")
-    time.sleep(3)
+    global invalid_choices
+    print("\nPlayer2 move..")
+    time.sleep(2)
     choice = [random.randint(0, 2) for i in range(2)]
-    invalid_choices.append(choice[0])
-    invalid_choices.append(choice[1])
+    while choice in invalid_choices:
+        choice = [random.randint(0, 2) for i in range(2)]
+
+    invalid_choices.append(choice)
     return choice
 
 def choice_side():
+    global Player1Char
+    global Player2Char
     inpt = input("Hello please choice sid [0] or [+]: ")
     Player1Char = inpt
     if inpt == "0":
@@ -42,35 +38,36 @@ def print_Board(board):
         print()
 
 def step_input_choice():
+    global invalid_choices
     choice = [int(i) for i in input("Enter step: ").split(",")]
-    if (choice[0] in invalid_choices) or (choice[1] in invalid_choices):
-        print("invalid input")
+    if choice in invalid_choices:
+        print("\ninvalid input")
     else:
-        invalid_choices.append(choice[0])
-        invalid_choices.append(choice[1])
+        invalid_choices.append(choice)
         return choice
 
 def input_handling(input_choice, char):
+    global board
     board[input_choice[0]][input_choice[1]] = char
 
 def check_win():
-    plr1 = 0
-    plr2 = 0
+    global state
     for i in range(3):
-        for j in range(3):
-            if board[i][j] == Player1Char:
-                plr1 = plr1 + 1
-                if plr1 == 3:
-                    winPlr1 = True
-                    state = True
-            else:
-                if board[i][j] == Player2Char:
-                    plr2 = plr2 + 1
-                    if plr2 == 3:
-                        winPlr1 = True
-                        state = True
+        if board[i][0] == board[i][1] == board[i][2] != '|':
+            state = True
+            win_message(board[i][1])
+        elif board[i][0] == board[i][1] == board[i][2] != '|':
+            state = True
+            win_message(board[i][1])
+        elif board[0][0] == board[1][1] == board[2][2] != '|':
+            state = True
+            win_message(board[1][1])
+        elif board[0][0] == board[1][1] == board[2][2] != '|':
+            state = True
+            win_message(board[1][1])
 
-
+def win_message(winChar):
+    print(f"\n{winChar} vyhrál!\n")
 
 
 def play():
@@ -82,9 +79,7 @@ def play():
         check_win()
 
 
-
 if __name__ == '__main__':
-    set_default()
     play()
 
 
